@@ -14,7 +14,7 @@ class SlicerToKiwiExporter:
     parent.title = "Slicer to KiwiViewer exporter"
     parent.categories = ["Exporter"]
     parent.dependencies = []
-    parent.contributors = ["Jean-Christophe Fillion-Robin (Kitware), Pat Marion (Kitware), Steve Pieper (Isomics)"] # replace with "Firstname Lastname (Org)"
+    parent.contributors = ["Jean-Christophe Fillion-Robin (Kitware), Pat Marion (Kitware), Steve Pieper (Isomics), Atsushi Yamada (Shiga University of Medical Science)"] # replace with "Firstname Lastname (Org)"
     parent.helpText = """
     This is an example of scripted loadable module bundled in an extension.
     """
@@ -57,7 +57,10 @@ class SlicerToKiwiExporterFileWriter:
         print('  exporting %s' % model.GetName())
         
         writer = vtk.vtkXMLPolyDataWriter()
-        writer.SetInput(model.GetPolyData())
+        if vtk.VTK_MAJOR_VERSION <= 5:
+            writer.SetInput(model.GetPolyData())
+        else:
+            writer.SetInputData(model.GetPolyData())
         fileName = os.path.join(outDir, model.GetName() + '.vtp')
         writer.SetFileName(fileName)
         writer.Write()
